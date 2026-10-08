@@ -1,0 +1,13 @@
+{
+    "name": "Terra Dashboard",
+    "description": "A personal dashboard to track my Terra journey.",
+    "week": -2,
+    "status": "in progress",
+    "goals": [
+        "Complete the Terra dashboard project",
+        "Track my progress through the Terra program",
+        "Integrate the Github API",
+        "Interate the Hackatime API"
+    ],
+    "notes": ""
+}
