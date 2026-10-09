@@ -1,7 +1,10 @@
 {
+    "version": 1,
     "name": "Terra Dashboard",
-    "description": "A personal dashboard to track my Terra journey.",
-    "week": -2,
+    "description": "A personal dashboard to track a Terra journey.",
+    "phase": "prep",
+    "weeks": [3],
+    "type": "project",
     "status": "in progress",
     "goals": [
         "Complete the Terra dashboard project",
@@ -9,5 +12,5 @@
         "Integrate the Github API",
         "Interate the Hackatime API"
     ],
-    "notes": ""
+    "notes": []
 }

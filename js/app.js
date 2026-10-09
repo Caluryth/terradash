@@ -71,3 +71,13 @@ projects.forEach(project => {
 const notesElement = document.querySelector("#notes-content");
 
 notesElement.textContent = currentProject.notes || "No notes yet.";
+
+/* ---- Test ---- */
+
+discoverTerraProjects("caluryth").then(projects => {
+    console.log("All discovered Terra projects:", projects);
+    console.log(`Found ${projects.length} Terra project(s).`);
+})
+.catch(error => {
+    console.error("Discovery failed:", error.message);
+});
