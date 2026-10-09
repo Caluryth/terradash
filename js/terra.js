@@ -50,7 +50,7 @@ async function fetchTerraMetadata(owner, repo) {
         );
     }
 
-    const file = await response.json;
+    const file = await response.json();
 
     if (file.type !== "file" || !file.content) {
         throw new Error("Could not find terra.json in this repository.");

@@ -106,17 +106,18 @@ section h2 {
 
 /* ---- Timeline Section Styling ---- */
 
-#timeline ol {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    padding-left: 20px;
+.project-card h3 {
+    margin-top: 0;
 }
 
-#timeline li {
-    padding: 12px;
-    background: #242424;
-    border-radius: 8px;
+.project-card a {
+    color: #e4c56a;
+}
+
+@media (max-width: 700px) {
+    #projects-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ---- Mobile ---- */
