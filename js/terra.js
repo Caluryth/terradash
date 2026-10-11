@@ -1,7 +1,7 @@
 function validateProject(project) {
     const validPhases = ["prep", "main"];
     const validTypes = ["project", "update"];
-    const validStatuses = ["in progress", "completed", "planned", "unfinished"];
+    const validStatuses = ["in-progress", "completed", "planned", "unfinished"];
 
     if (typeof project.name !== "string" || !project.name.trim()) {
         throw new Error("Project must have a name.");
@@ -129,6 +129,22 @@ async function discoverTerraProjects(owner) {
     return terraProjects;
 }
 
+async function fetchGitHubProfile(username) {
+    const url = `https://api.github.com/users/${encodeURIComponent(username)}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(
+            `Could not fetch GitHub profile: ${response.status} ${response.statusText}`
+        )
+    }
+
+    const profile = await response.json();
+
+    return profile;
+}
+
 function isProjectInWeek(project, phase, week) {
     return project.phase === phase && project.weeks.includes(week);
 }
@@ -142,11 +158,11 @@ function getProjectsForWeek(projects, phase, week) {
 function getProjectStats(projects) {
     return {
         total: projects.length,
-        competed: projects.filter(
+        completed: projects.filter(
             project => project.status === "completed"
         ).length,
         inProgress: projects.filter(
-            project => project.status === "in progress"
+            project => project.status === "in-progress"
         ).length,
         planned: projects.filter(
             project => project.status === "planned"
@@ -171,4 +187,20 @@ function getScheduleProgress(config) {
             ? Math.round((elapsedWeeks / totalWeeks) * 100)
             : 0
     };
+}
+
+async function fetchHackatimeStats(username) {
+    const url =
+        `https://hackatime.com/api/v1/users/` +
+        `${encodeURIComponent(username)}/stats`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(
+            `Could not fetch Hackatime stats: ${response.status} ${response.statusText}`
+        );
+    }
+
+    return await response.json();
 }

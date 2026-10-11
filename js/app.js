@@ -64,6 +64,76 @@ function renderOverview(projects) {
         `${progress.percentage}%`;
 }
 
+function renderGitHubProfile(profile) {
+    const avatar = document.querySelector("#profile-avatar");
+    const name = document.querySelector("#profile-name");
+    const bio = document.querySelector("#profile-bio");
+    const link = document.querySelector("#profile-link");
+
+    avatar.src = profile.avatar_url;
+    avatar.alt = `${profile.login}'s Github profile picture`;
+
+    name.textContent = profile.name || profile.login;
+    bio.textContent = profile.bio || "No bio provided.";
+
+    link.href = profile.html_url;
+}
+
+function renderCurrentWeek(projects) {
+    const label = document.querySelector("#current-week-label");
+    const container = document.querySelector("#current-week-project");
+
+    const phase = terraConfig.currentPhase;
+    const week = terraConfig.currentWeek;
+
+    const weekName = phase === "prep"
+        ? `Prep Week ${week}`
+        : `Week ${week}`;
+
+    label.textContent = `${weekName} projects`;
+
+    const currentProjects = getProjectsForWeek(
+        projects,
+        phase,
+        week
+    );
+
+    container.replaceChildren();
+
+    if (currentProjects.length === 0) {
+        container.textContent = "No projects assigned to this week.";
+        return;
+    }
+
+    currentProjects.forEach(project => {
+        const card = document.createElement("article");
+        card.classList.add("project-card");
+
+        const title = document.createElement("h3");
+        title.textContent = project.name;
+
+        const description = document.createElement("p");
+        description.textContent =
+            project.description || "No description provided.";
+
+        const status = document.createElement("p");
+        status.textContent = `Status: ${project.status}`;
+
+        const link = document.createElement("a");
+        link.href = project.repositoryUrl;
+        link.textContent = "View Repository";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+
+        card.appendChild(title);
+        card.appendChild(description);
+        card.appendChild(status);
+        card.appendChild(link);
+
+        container.appendChild(card);
+    });
+}
+
 async function initializeDashboard() {
     const status = document.querySelector("#project-list-status");
 
@@ -75,8 +145,13 @@ async function initializeDashboard() {
             fetchGitHubProfile(terraConfig.githubUsername)
         ]);
 
+        const hackatimeStats = await fetchHackatimeStats(terraConfig.hackatimeUsername);
+        console.log("Hackatime stats:", hackatimeStats);
+
         renderProjects(projects);
         renderOverview(projects);
+        renderCurrentWeek(projects);
+        renderGitHubProfile(profile);
 
         console.log("Loaded Terra projects:", projects);
     } catch (error) {
