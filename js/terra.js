@@ -128,3 +128,47 @@ async function discoverTerraProjects(owner) {
 
     return terraProjects;
 }
+
+function isProjectInWeek(project, phase, week) {
+    return project.phase === phase && project.weeks.includes(week);
+}
+
+function getProjectsForWeek(projects, phase, week) {
+    return projects.filter(project => 
+        isProjectInWeek(project, phase, week)
+    );
+}
+
+function getProjectStats(projects) {
+    return {
+        total: projects.length,
+        competed: projects.filter(
+            project => project.status === "completed"
+        ).length,
+        inProgress: projects.filter(
+            project => project.status === "in progress"
+        ).length,
+        planned: projects.filter(
+            project => project.status === "planned"
+        ).length,
+        unfinished: projects.filter(
+            project => project.status === "unfinished"
+        ).length
+    };
+}
+
+function getScheduleProgress(config) {
+    const totalWeeks = config.prepWeeks + config.challengeWeeks;
+
+    const elapsedWeeks = config.currentPhase === "prep"
+        ? config.currentWeek - 1
+        : config.prepWeeks + config.currentWeek - 1;
+
+    return {
+        totalWeeks,
+        elapsedWeeks,
+        percentage: totalWeeks > 0
+            ? Math.round((elapsedWeeks / totalWeeks) * 100)
+            : 0
+    };
+}

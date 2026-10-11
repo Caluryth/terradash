@@ -1,68 +1,8 @@
-const projects = terraData.projects;
-const currentProject = terraData.projects[terraData.currentWeek + 2];
-
-/* ---- Statistics ---- */
-
-const totalHours = projects.reduce(
-    (total, project) => total + project.hours,
-    0
-);
-
-const completedProjects = projects.filter(
-    project => project.status === "complete"
-).length;
-
-const totalWeeks = 12;
-
-const progressPercent = Math.round(
-    (terraData.currentWeek / totalWeeks) * 100
-);
-
-/* ---- Progress ---- */
-
-document.querySelector("#progress p").textContent = `Week ${terraData.currentWeek} of ${projects.length - 1}`;
-
-document.querySelector("#progress span").textContent = `${progressPercent}%`;
-
-document.querySelector("#progress span").style.width = `${progressPercent}%`;
-
-/* ---- Overview ---- */
-
-document.querySelector("#total-hours").textContent = `${totalHours} hours`;
-
-document.querySelector("#project-count").textContent = `${completedProjects} / ${projects.length} complete`;
-
-document.querySelector("#current-week").textContent = `Week ${terraData.currentWeek}`;
-
-/* ---- Current Project ---- */
-
-document.querySelector("#current-project h3").textContent = currentProject.name;
-
-document.querySelector("#current-project > p").textContent = currentProject.description;
-
-document.querySelector("#current-project p:nth-of-type(2)").textContent = `${currentProject.hours} hours spent`;
-
-document.querySelector("#current-project p:nth-of-type(3)").textContent = `Status: ${currentProject.status}`;
-
-/* ---- Goals ---- */
-
-const goalsList = document.querySelector("#goals ul");
-
-goalsList.innerHTML = "";
-
-currentProject.goals.forEach(goal => {
-    const listItem = document.createElement("li");
-    listItem.textContent = goal;
-    goalsList.appendChild(listItem);
-});
-
-/* ---- Project List ---- */
-
 function renderProjects(projects) {
     const container = document.querySelector("#projects-container");
-    const status = document.querySelector("#projects-list-status");
+    const status = document.querySelector("#project-list-status");
 
-    container.innerHTML = "";
+    container.replaceChildren();
 
     if (projects.length === 0) {
         status.textContent = "No Terra projects found.";
@@ -77,45 +17,73 @@ function renderProjects(projects) {
 
         const title = document.createElement("h3");
         title.textContent = project.name;
-        
+
         const description = document.createElement("p");
-        description.textContent = project.description;
+        description.textContent =
+            project.description || "No description provided.";
 
         const details = document.createElement("p");
         const weeks = project.weeks.length
             ? project.weeks.map(week =>
                 `${project.phase === "prep" ? "Prep " : ""}Week ${week}`
             ).join(", ")
-            : "No weeks assigned";
+            : "No weeks assigned.";
 
         details.textContent = `${weeks} · ${project.status}`;
 
         const link = document.createElement("a");
         link.href = project.repositoryUrl;
-        link.textContent = "View repository";
+        link.textContent = "View Repository";
         link.target = "_blank";
         link.rel = "noopener noreferrer";
 
         card.append(title, description, details, link);
-        container.appendChild(card);
-    })
+        container.appendChild(card);  
+    });
 }
 
-/* ---- Notes ---- */
+function renderOverview(projects) {
+    const stats = getProjectStats(projects);
+    const progress = getScheduleProgress(terraConfig);
 
-const notesElement = document.querySelector("#notes-content");
+    document.querySelector("#total-hours").textContent =
+        "Connect Hackatime";
 
-notesElement.textContent = currentProject.notes || "No notes yet.";
+    document.querySelector("#project-count").textContent =
+        `${stats.completed} / ${stats.total} completed`;
 
+    document.querySelector("#current-week").textContent =
+        terraConfig.currentPhase === "prep"
+            ? `Prep ${terraConfig.currentWeek}`
+            : `Week ${terraConfig.currentWeek}`;
 
-/* ---- Data Aggregation ---- */
+    document.querySelector("#progress-label").textContent =
+        `${progress.percentage}% · ${progress.elapsedWeeks} of ${progress.totalWeeks} weeks elapsed.`;
+    
+    document.querySelector("#progress-bar").style.width =
+        `${progress.percentage}%`;
+}
 
-discoverTerraProjects("caluryth").then(projects => {
-    console.log("All discovered Terra projects:", projects);
-    renderProjects(projects);
-})
-.catch(error => {
-    console.warn("Discovery failed:", error.message);
+async function initializeDashboard() {
+    const status = document.querySelector("#project-list-status");
 
-    document.querySelector("#projects-list-status").textContent = "Could not load Terra projects. Check the console for details.";
-});
+    try {
+        status.textContent = "Loading Terra projects...";
+
+        const [projects, profile] = await Promise.all([
+            discoverTerraProjects(terraConfig.githubUsername),
+            fetchGitHubProfile(terraConfig.githubUsername)
+        ]);
+
+        renderProjects(projects);
+        renderOverview(projects);
+
+        console.log("Loaded Terra projects:", projects);
+    } catch (error) {
+        console.error("Dashboard initialization failed:", error);
+
+        status.textContent = "Could not load dashboard data. Check the console for details.";
+    }
+} 
+
+initializeDashboard();

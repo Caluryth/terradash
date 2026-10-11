@@ -14,49 +14,53 @@
     <header>
         <h1>Terra Dashboard</h1>
         <p>My 12-week coding journey.</p>
+
+        <div id="github-profile">
+            <img id="profile-avatar" alt="Github profile picture">
+
+            <div>
+                <h2 id="profile-name">Loading Github profile...</h2>
+                <p id="profile-bio"></p>
+
+                <a id="profile-link" target="_blank" rel="noopener noreferrer">View Github Profile</a>
+            </div>
+        </div>
     </header>
 
     <main>
 
         <section id="progress">
             <h2>Terra Progress</h2>
-            <p>Week 0 of 12</p>
+            <p id="progress-label">Loading schedule...</p>
 
-            <div>
-                <span>0%</span>
+            <div class="progress-track">
+                <div id=""progress-bar" class=""progress-fill"></div>
             </div>
         </section>
 
         <section id="overview">
-
             <div>
                 <h2>Total Hours</h2>
-                <p id="total-hours"></p>
+                <p id="total-hours">Loading...</p>
             </div>
 
             <div>
                 <h2>Projects</h2>
-                <p id="project-count"></p>
+                <p id="project-count">Loading...</p>
             </div>
 
             <div>
                 <h2>Current Week</h2>
-                <p id="current-week"></p>
+                <p id="current-week">Loading...</p>
             </div>
         </section>
 
         <section id="current-project">
-            <h2>Current Projects</h2>
+            <h2>Current Week Project</h2>
 
-            <h3>Terra Dashboard</h3>
+            <p id="current-week-label">Loading...</p>
 
-            <p>
-                Build a personal dashboard to track my Terra journey.
-            </p>
-
-            <p>0 hours spent</p>
-
-            <p>Status: In Progress</p>
+            <div id="current-week-project"></div>
         </section>
 
         <section id="goals">
@@ -73,10 +77,10 @@
         <section id="project-list">
             <h2>Terra Projects</h2>
 
-            <p id="projects-list-status">Loading projects...</p>
+            <p id="project-list-status">Loading projects...</p>
 
             <div id="projects-container"></div>
-        </section>>
+        </section>
 
         <section id="notes">
             <h2>Recent Notes</h2>
@@ -87,6 +91,7 @@
 
     <script src="js/data.js"></script>
     <script src="js/terra.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
