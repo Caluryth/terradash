@@ -6,11 +6,11 @@
     "weeks": [3],
     "type": "project",
     "status": "in-progress",
+    "hours": 6,
     "goals": [
         "Complete the Terra dashboard project",
         "Track my progress through the Terra program",
-        "Integrate the Github API",
-        "Interate the Hackatime API"
+        "Integrate the Github API"
     ],
     "notes": []
 }

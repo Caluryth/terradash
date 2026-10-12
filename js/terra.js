@@ -36,6 +36,14 @@ function validateProject(project) {
         throw new Error("Goals and notes must be arrays.");
     }
 
+    if (project.hours !== undefined && (
+        typeof project.hours !== "number" ||
+        !Number.isFinite(project.hours) ||
+        project.hours < 0
+    )) {
+        throw new Error("Hours must be a non-negative number.");
+    }
+
     return true;
 }
 
@@ -169,7 +177,11 @@ function getProjectStats(projects) {
         ).length,
         unfinished: projects.filter(
             project => project.status === "unfinished"
-        ).length
+        ).length,
+        totalHours: projects.reduce(
+            (total, project) => total + (project.hours ?? 0),
+            0
+        )
     };
 }
 
@@ -187,20 +199,4 @@ function getScheduleProgress(config) {
             ? Math.round((elapsedWeeks / totalWeeks) * 100)
             : 0
     };
-}
-
-async function fetchHackatimeStats(username) {
-    const url =
-        `https://hackatime.com/api/v1/users/` +
-        `${encodeURIComponent(username)}/stats`;
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error(
-            `Could not fetch Hackatime stats: ${response.status} ${response.statusText}`
-        );
-    }
-
-    return await response.json();
 }

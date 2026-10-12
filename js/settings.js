@@ -1,6 +1,6 @@
 const SETTINGS_KEY = "terradash-settings";
 
-const settingsForm = document.getElementById("#settings-form");
+const settingsForm = document.querySelector("#settings-form");
 const settingsStatus = document.querySelector("#settings-status");
 
 function loadSettings() {

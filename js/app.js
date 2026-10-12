@@ -47,7 +47,7 @@ function renderOverview(projects) {
     const progress = getScheduleProgress(terraConfig);
 
     document.querySelector("#total-hours").textContent =
-        "Connect Hackatime";
+        `${Number(stats.totalHours.toFixed(2))} hours`;
 
     document.querySelector("#project-count").textContent =
         `${stats.completed} / ${stats.total} completed`;
@@ -144,9 +144,6 @@ async function initializeDashboard() {
             discoverTerraProjects(terraConfig.githubUsername),
             fetchGitHubProfile(terraConfig.githubUsername)
         ]);
-
-        const hackatimeStats = await fetchHackatimeStats(terraConfig.hackatimeUsername);
-        console.log("Hackatime stats:", hackatimeStats);
 
         renderProjects(projects);
         renderOverview(projects);
