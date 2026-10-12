@@ -5,8 +5,8 @@
     "phase": "prep",
     "weeks": [3],
     "type": "project",
-    "status": "in-progress",
-    "hours": 6,
+    "status": "completed",
+    "hours": 6.5,
     "goals": [
         "Complete the Terra dashboard project",
         "Track my progress through the Terra program",

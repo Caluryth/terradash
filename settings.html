@@ -1,85 +1,83 @@
+
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        <title>Settings | Terradash</title>
-
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-
-    <body>
-        <header>
-            <h1>Terradash Settings</h1>
-            <p>Customize your Terra dashboard.</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Terradash</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Terradash Settings</h1>
+        <p>Customize your Terra dashboard.</p>
+        <nav>
             <a href="index.html">Back to Dashboard</a>
-        </header>
+        </nav>
+    </header>
 
-        <main>
-            <form id="settings-form">
-                <section>
-                    <h2>Github</h2>
+    <main>
+        <form id="settings-form">
+            <section>
+                <h2>GitHub</h2>
+                <label for="github-username">GitHub username</label>
+                <input
+                    type="text"
+                    id="github-username"
+                    name="githubUsername"
+                    placeholder="Your GitHub username"
+                    autocomplete="username"
+                    required
+                >
+            </section>
 
-                    <label for="github-username">
-                        GitHub Username
-                    </label>
-                    <input 
-                        type="text",
-                        id="github-username",
-                        name="githubUsername",
-                        placeholder="Your GitHub username",
-                        required
-                    >
-                </section>
+            <section>
+                <h2>Terra Schedule</h2>
 
-                <section>
-                    <h2>Terra Schedule</h2>
+                <label for="prep-weeks">Number of prep weeks</label>
+                <input
+                    type="number"
+                    id="prep-weeks"
+                    name="prepWeeks"
+                    min="0"
+                    step="1"
+                    required
+                >
 
-                    <label for="prep-weeks">Number of prep weeks</label>
-                    <input
-                        type="number",
-                        id="prep-weeks",
-                        name="prepWeeks",
-                        min="0",
-                        value="2"
-                        required
-                    >
+                <label for="challenge-weeks">
+                    Number of challenge weeks
+                </label>
+                <input
+                    type="number"
+                    id="challenge-weeks"
+                    name="challengeWeeks"
+                    min="1"
+                    step="1"
+                    required
+                >
 
-                    <label for="challenge-weeks">
-                        Number of challenge weeks
-                    </label>
-                    <input
-                        type="number",
-                        id="challenge-weeks",
-                        name="challengedWeeks",
-                        min="1",
-                        value="12",
-                        required
-                    >
+                <label for="current-phase">Current phase</label>
+                <select id="current-phase" name="currentPhase">
+                    <option value="prep">Preparation</option>
+                    <option value="main">Main challenge</option>
+                </select>
 
-                    <label for="current-phase">Current phase</label>
-                    <select id="current-phase" name="currentPhase">
-                        <option value="prep">Prep Week</option>
-                        <option value="main">Challenge Week</option>
-                    </select>
+                <label for="current-week">Current week</label>
+                <input
+                    type="number"
+                    id="current-week"
+                    name="currentWeek"
+                    min="1"
+                    step="1"
+                    required
+                >
+            </section>
 
-                        <label for="current-week">Current week</label>
-                        <input
-                            type="number",
-                            id="current-week",
-                            name="currentWeek",
-                            min="1",
-                            value="1",
-                            required
-                        >
-                </section>
+            <button type="submit">Save Settings</button>
+            <p id="settings-status" role="status" aria-live="polite"></p>
+        </form>
+    </main>
 
-                    <button type="submit">Save Settings</button>
-                    <p id="settings-status" role="status"></p>
-            </form>
-        </main>
-
-        <script src="js/settings.js"></script>
-    </body>
+    <script src="js/settings.js"></script>
+</body>
 </html>

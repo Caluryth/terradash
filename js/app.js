@@ -22,6 +22,9 @@ function renderProjects(projects) {
         description.textContent =
             project.description || "No description provided.";
 
+        const hours = document.createElement("p");
+        hours.textContent = `${project.hours ?? 0} hours logged`;
+        
         const details = document.createElement("p");
         const weeks = project.weeks.length
             ? project.weeks.map(week =>
@@ -37,7 +40,7 @@ function renderProjects(projects) {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
 
-        card.append(title, description, details, link);
+        card.append(title, description, hours, details, link);
         container.appendChild(card);  
     });
 }
@@ -116,6 +119,9 @@ function renderCurrentWeek(projects) {
         description.textContent =
             project.description || "No description provided.";
 
+        const hours = document.createElement("p");
+        hours.textContent = `${project.hours ?? 0} hours logged`;
+
         const status = document.createElement("p");
         status.textContent = `Status: ${project.status}`;
 
@@ -127,6 +133,7 @@ function renderCurrentWeek(projects) {
 
         card.appendChild(title);
         card.appendChild(description);
+        card.appendChild(hours);
         card.appendChild(status);
         card.appendChild(link);
 
@@ -134,28 +141,97 @@ function renderCurrentWeek(projects) {
     });
 }
 
+
+function renderGoalsAndNotes(projects) {
+    const goalsList = document.querySelector("#goals-list");
+    const notesContainer = document.querySelector("#notes-content");
+
+    const currentProjects = getProjectsForWeek(
+        projects,
+        terraConfig.currentPhase,
+        terraConfig.currentWeek
+    );
+
+    goalsList.replaceChildren();
+    notesContainer.replaceChildren();
+
+    const goals = currentProjects.flatMap(project =>
+        (project.goals || []).map(goal => ({
+            projectName: project.name,
+            text: goal
+        }))
+    );
+
+    if (goals.length === 0) {
+        const item = document.createElement("li");
+        item.textContent = "No goals listed for this week.";
+        goalsList.appendChild(item);
+    } else {
+        goals.forEach(goal => {
+            const item = document.createElement("li");
+            item.textContent = `${goal.projectName}: ${goal.text}`;
+            goalsList.appendChild(item);
+        });
+    }
+
+    const notes = projects.flatMap(project =>
+        (project.notes || []).map(note => ({
+            projectName: project.name,
+            text: typeof note === "string"
+                ? note
+                : JSON.stringify(note)
+        }))
+    );
+
+    if (notes.length === 0) {
+        notesContainer.textContent = "No project notes yet.";
+        return;
+    }
+
+    const list = document.createElement("ul");
+
+    notes.forEach(note => {
+        const item = document.createElement("li");
+        item.textContent = `${note.projectName}: ${note.text}`;
+        list.appendChild(item);
+    });
+
+    notesContainer.appendChild(list);
+}
+
 async function initializeDashboard() {
     const status = document.querySelector("#project-list-status");
+    let projects = [];
 
     try {
         status.textContent = "Loading Terra projects...";
-
-        const [projects, profile] = await Promise.all([
-            discoverTerraProjects(terraConfig.githubUsername),
-            fetchGitHubProfile(terraConfig.githubUsername)
-        ]);
+        projects = await discoverTerraProjects(terraConfig.githubUsername);
 
         renderProjects(projects);
         renderOverview(projects);
         renderCurrentWeek(projects);
-        renderGitHubProfile(profile);
-
-        console.log("Loaded Terra projects:", projects);
+        renderGoalsAndNotes(projects);
     } catch (error) {
-        console.error("Dashboard initialization failed:", error);
-
-        status.textContent = "Could not load dashboard data. Check the console for details.";
+        console.error("Could not load Terra projects:", error);
+        status.textContent =
+            "Could not load projects. Check the GitHub username, network connection, or API rate limit.";
     }
-} 
+
+    try {
+        const profile = await fetchGitHubProfile(
+            terraConfig.githubUsername
+        );
+        renderGitHubProfile(profile);
+    } catch (error) {
+        console.error("Could not load GitHub profile:", error);
+
+        document.querySelector("#profile-name").textContent =
+            "GitHub profile unavailable";
+        document.querySelector("#profile-bio").textContent =
+            "Check the configured username or try again later.";
+        document.querySelector("#profile-link").hidden = true;
+        document.querySelector("#profile-avatar").hidden = true;
+    }
+}
 
 initializeDashboard();

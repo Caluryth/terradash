@@ -48,7 +48,9 @@ function validateProject(project) {
 }
 
 async function fetchTerraMetadata(owner, repo) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/terra.json`;
+    const url =
+        `https://api.github.com/repos/${encodeURIComponent(owner)}/` +
+        `${encodeURIComponent(repo)}/contents/terra.json`;
 
     const response = await fetch(url);
 
@@ -128,7 +130,7 @@ async function discoverTerraProjects(owner) {
             }
 
             console.warn(
-                `Could not process ${repository.name}`,
+                `Could not process ${repository.name}:`,
                 error.message
             );
         }
